@@ -1,0 +1,30 @@
+name: firebase_quiz_app
+description: AHHHH
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.2 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  google_fonts: ^3.0.1
+  firebase_auth: ^4.2.9
+  firebase_core: ^2.5.0
+  cloud_firestore: ^4.4.2
+  firebase_storage: ^11.0.14
+  google_sign_in: ^6.0.2
+  provider: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

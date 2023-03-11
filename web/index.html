@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="google-signin-client_id" content="566144853739-1oc3vs42rnjlovmem30jip2k332ut68b.apps.googleusercontent.com">
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="firebase_quiz_app">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>firebase_quiz_app</title>
+  <link rel="manifest" href="manifest.json">
+  
+   <!-- The core Firebase JS SDK (always required for using any firebase service) -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+    <!-- Firebase Auth SDK -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    var serviceWorkerVersion = null;
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
+</head>
+<body>
+   <!-- The core Firebase JS SDK (always required for using any firebase service) -->
+   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+   <!-- Firebase Auth SDK -->
+   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+
+   <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAE_pEK0HhS5fcgUvlOkOQdV_PXRJhfkA4",
+      authDomain: "apcs-quiz-app.firebaseapp.com",
+      projectId: "apcs-quiz-app",
+      storageBucket: "apcs-quiz-app.appspot.com",
+      messagingSenderId: "369714629703",
+      appId: "1:369714629703:web:00e271a0d858d9c44f7562",
+      measurementId: "G-DRBD50WCNE"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <!-- END OF FIREBASE INIT CODE -->
+
+  <script src="main.dart.js" type="application/javascript"></script>
+  
+  <script>
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+    
+  </script>
+</body>
+</html>
