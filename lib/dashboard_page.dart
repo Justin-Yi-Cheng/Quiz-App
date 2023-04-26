@@ -4,15 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'firebase_info.dart';
 import 'widgets.dart';
 
-/* To-Do List:
- * Find current computer time
- *   - If assignment past due date, assignment should have red border.
- *   - If teacher LOCKS assignment, then assignment cannot be accessed 
- *  
- * 
- * 
- * 
-*/
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -21,28 +12,24 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  late final Future firebaseInfo;
+  Map<int, Color> selectedMap = {};
+  int selectedClassIndex = 0;
+  late Future firebaseInfo;
 
   @override
   void initState() {
     super.initState();
     firebaseInfo = getFirebaseInfo();
+    selectedMap[0] = const Color.fromRGBO(216, 216, 216, 1);
   }
-
-  List<Color?> selectedClassColors = List.filled(6, Colors.white);
-  int selectedClassIndex = 0;
 
   void setClassIndex(int index) {
     setState(() {
       selectedClassIndex = index;
+      selectedMap[index] = const Color.fromRGBO(216, 216, 216, 1);
 
-      for (int i = 0; i < selectedClassColors.length; i++) {
-        selectedClassColors[i] = Colors.white;
-      }
-
-      selectedClassColors[selectedClassIndex] = Colors.red;
-
-      debugPrint("${selectedClassColors}");
+      selectedMap
+          .updateAll((key, value) => key != index ? Colors.white : value);
     });
   }
 
@@ -97,48 +84,51 @@ class _DashboardPageState extends State<DashboardPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              width: appWidth,
-              height: 125,
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    bottom: 0,
-                    child: Container(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 20.0),
+              child: SizedBox(
+                width: appWidth,
+                height: 125,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: appWidth,
+                        height: appWidth,
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(245, 111, 70, 1),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Positioned(
                       width: appWidth,
-                      height: appWidth,
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(245, 111, 70, 1),
-                        shape: BoxShape.circle,
+                      top: appHeight * 0.025,
+                      child: Text(
+                        "Welcome",
+                        style: GoogleFonts.lexend(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textScaleFactor: 1.25,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-                  Positioned(
-                    width: appWidth,
-                    top: appHeight * 0.025,
-                    child: Text(
-                      "Welcome",
-                      style: GoogleFonts.lexend(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                    Center(
+                      child: Text(
+                        "Student-Name",
+                        style: GoogleFonts.lexend(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textScaleFactor: 2.6,
+                        textAlign: TextAlign.center,
                       ),
-                      textScaleFactor: 1.25,
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  Center(
-                    child: Text(
-                      "Student-Name",
-                      style: GoogleFonts.lexend(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textScaleFactor: 2.6,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Row(
@@ -161,10 +151,11 @@ class _DashboardPageState extends State<DashboardPage> {
                     SizedBox(
                       width: appWidth * 0.3,
                       height: appHeight * 0.75,
-                      child: FutureBuilder(
-                        future: firebaseInfo,
+                      child: StreamBuilder(
+                        stream: firebaseInfo.asStream(),
                         builder: (context, snapshot) {
                           return ListView.builder(
+                            key: UniqueKey(),
                             shrinkWrap: true,
                             padding:
                                 const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
@@ -178,6 +169,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                   teacherName: courseData[index]
                                       ["Teacher-Name"],
                                   period: courseData[index]["Period"],
+                                  selectedColor:
+                                      selectedMap[index] ?? Colors.white,
                                 ),
                               );
                             },
@@ -201,27 +194,61 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     ),
                     SizedBox(
-                      width: appWidth * 0.3,
+                      width: appWidth * 0.7,
                       height: appHeight * 0.75,
-                      child: FutureBuilder(
-                        future: firebaseInfo,
-                        builder: (context, snapshot) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                            scrollDirection: Axis.vertical,
-                            itemCount: courseData[selectedClassIndex]
-                                    ["Assignments"]
-                                .length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return AssignmentCard(
-                                assignmentName: courseData[selectedClassIndex]
-                                    ["Assignments"][index]["Assignment-Name"],
+                      child: StreamBuilder(
+                          stream: firebaseInfo.asStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Align(
+                                alignment: Alignment.topCenter,
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               );
-                            },
-                          );
-                        },
-                      ),
+                            }
+
+                            return GridView.builder(
+                              shrinkWrap: true,
+                              padding:
+                                  const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+                              scrollDirection: Axis.vertical,
+                              itemCount: courseData[selectedClassIndex]
+                                      ["Assignments"]
+                                  .length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: 2.75,
+                              ),
+                              itemBuilder: (BuildContext context, int index) {
+                                Map<String, dynamic> assignment =
+                                    courseData[selectedClassIndex]
+                                        ["Assignments"]["$index"];
+
+                                return AssignmentCard(
+                                  assignmentName: assignment["Assignment-Name"],
+                                  teacherName: courseData[selectedClassIndex]
+                                      ["Teacher-Name"],
+                                  dueDate: assignment["Due-Date"],
+                                  timeLimit: assignment["Time-Limit"],
+                                  questions: assignment["Questions"],
+                                  isSubmitted: assignment["Is-Submit"],
+                                  selectedClassIndex: selectedClassIndex,
+                                );
+                              },
+                            );
+                          }),
                     ),
                   ],
                 ),

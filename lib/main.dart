@@ -4,9 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
-import 'Authorization/auth_page.dart';
 import 'Authorization/google_sign_in.dart';
-import 'firebase_info.dart';
 
 // Have to run using the specific port:
 // flutter run -d chrome --web-hostname localhost --web-port 7357

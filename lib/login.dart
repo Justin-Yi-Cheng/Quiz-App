@@ -11,10 +11,11 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
   static const int duration = 1;
   double opacity = 0;
-  bool openPositions = false;
 
   void changeOpacity() {
     Future.delayed(const Duration(seconds: duration), () {
@@ -24,19 +25,24 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void changePositions() {
-    Future.delayed(const Duration(seconds: duration), () {
-      setState(() {
-        openPositions = true;
-      });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
+
+    animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1250),
+    );
+
+    animationController.forward();
+
     changeOpacity();
-    changePositions();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    animationController.dispose();
   }
 
   @override
@@ -73,71 +79,102 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          AnimatedPositioned(
-            top: appHeight * 0.35,
-            left: openPositions ? appWidth * 0.35 : appWidth * 0.35 + 20,
+          AnimatedOpacity(
+            opacity: opacity,
             duration: const Duration(seconds: duration),
-            curve: Curves.fastLinearToSlowEaseIn,
-            child: AnimatedOpacity(
-              opacity: opacity,
-              duration: const Duration(seconds: duration),
-              child: Text(
-                "Welcome to",
-                style: GoogleFonts.lexend(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+            child: Center(
+              child: Transform(
+                transform: Matrix4.translationValues(0.0, -60.0, 0.0),
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(1, 0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animationController,
+                      curve: Curves.fastOutSlowIn,
+                    ),
+                  ),
+                  child: Text(
+                    "Welcome to",
+                    style: GoogleFonts.lexend(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textScaleFactor: 2,
+                  ),
                 ),
-                textScaleFactor: 2,
               ),
             ),
           ),
-          AnimatedPositioned(
-            top: appHeight * 0.4,
-            left: openPositions ? appWidth * 0.25 : appWidth * 0.25 - 20,
+          AnimatedOpacity(
+            opacity: opacity,
             duration: const Duration(seconds: duration),
-            curve: Curves.fastLinearToSlowEaseIn,
-            child: AnimatedOpacity(
-              opacity: opacity,
-              duration: const Duration(seconds: duration),
-              child: Text(
-                "GradeIQ",
-                style: GoogleFonts.lexend(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+            child: Center(
+              child: Transform(
+                transform: Matrix4.translationValues(0.0, -10.0, 0.0),
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(-1, 0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animationController,
+                      curve: Curves.fastOutSlowIn,
+                    ),
+                  ),
+                  child: Text(
+                    "GradeIQ",
+                    style: GoogleFonts.lexend(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textScaleFactor: 4.5,
+                  ),
                 ),
-                textScaleFactor: 4.5,
               ),
             ),
           ),
-          AnimatedPositioned(
-            top: openPositions ? appHeight * 0.55 : appHeight * 0.55 + 20,
-            left: appWidth * 0.275,
+          AnimatedOpacity(
+            opacity: opacity,
             duration: const Duration(seconds: duration),
-            curve: Curves.fastLinearToSlowEaseIn,
-            child: AnimatedOpacity(
-              opacity: opacity,
-              duration: const Duration(seconds: duration),
-              child: GestureDetector(
-                onTap: () {
-                  final provider =
-                      Provider.of<GoogleSignInProvider>(context, listen: false);
-                  provider.googleLogin();
-                },
-                child: IntrinsicHeight(
-                  child: Container(
-                    color: const Color.fromRGBO(255, 87, 51, 1),
-                    width: 250,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text(
-                          "Login With Google",
-                          style: GoogleFonts.lexend(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+            child: Center(
+              child: Transform(
+                transform: Matrix4.translationValues(0.0, 60.0, 0.0),
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 1),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animationController,
+                      curve: Curves.fastOutSlowIn,
+                    ),
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      final provider = Provider.of<GoogleSignInProvider>(
+                          context,
+                          listen: false);
+                      provider.googleLogin();
+                    },
+                    child: IntrinsicHeight(
+                      child: Container(
+                        color: const Color.fromRGBO(255, 87, 51, 1),
+                        width: 225,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              "Login With Google",
+                              style: GoogleFonts.lexend(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textScaleFactor: 1.5,
+                            ),
                           ),
-                          textScaleFactor: 1.5,
                         ),
                       ),
                     ),
